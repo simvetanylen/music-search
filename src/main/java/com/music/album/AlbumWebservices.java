@@ -8,6 +8,7 @@ import com.music.album.dto.UpdateAlbumCommandDto;
 import com.music.album.query.AlbumQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -49,7 +50,7 @@ public class AlbumWebservices {
 
     @PostMapping
     public void create(
-            @RequestBody CreateAlbumCommandDto dto
+            @Validated @RequestBody CreateAlbumCommandDto dto
     ) {
         albumCommandService.create(new CreateAlbumCommand(
                 UUID.randomUUID(),
@@ -63,7 +64,7 @@ public class AlbumWebservices {
     @PutMapping("{id}")
     public void update(
             @PathVariable("id") UUID id,
-            @RequestBody UpdateAlbumCommandDto dto
+            @Validated @RequestBody UpdateAlbumCommandDto dto
     ) {
         albumCommandService.update(new UpdateAlbumCommand(
                 id,
