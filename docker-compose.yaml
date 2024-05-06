@@ -13,6 +13,15 @@ services:
       - 9200:9200
     networks:
       - musicStack
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -X GET http://localhost:9200/_cluster/health?pretty | grep status | grep -q '\\(green\\|yellow\\)'"
+        ]
+      interval: 2s
+      timeout: 10s
+      retries: 24
   music-backend:
     image: "music-backend:latest"
     environment:
@@ -20,7 +29,8 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - elasticsearch
+      elasticsearch:
+        condition: service_healthy
     networks:
       - musicStack
 

@@ -1,5 +1,10 @@
 package com.music.album;
 
+import com.music.album.command.CreateAlbumCommand;
+import com.music.album.command.DeleteAlbumCommand;
+import com.music.album.command.UpdateAlbumCommand;
+import com.music.album.dto.CreateAlbumCommandDto;
+import com.music.album.dto.UpdateAlbumCommandDto;
 import com.music.album.query.AlbumQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,5 +45,39 @@ public class AlbumWebservices {
             @RequestBody AlbumQuery albumQuery
     ) {
         return albumQueryService.findAlbums(PageRequest.of(pageNumber, pageSize), albumQuery);
+    }
+
+    @PostMapping
+    public void create(
+            @RequestBody CreateAlbumCommandDto dto
+    ) {
+        albumCommandService.create(new CreateAlbumCommand(
+                UUID.randomUUID(),
+                dto.title(),
+                dto.artist(),
+                dto.releaseYear(),
+                dto.coverUrl()
+        ));
+    }
+
+    @PutMapping("{id}")
+    public void update(
+            @PathVariable("id") UUID id,
+            @RequestBody UpdateAlbumCommandDto dto
+    ) {
+        albumCommandService.update(new UpdateAlbumCommand(
+                id,
+                dto.title(),
+                dto.artist(),
+                dto.releaseYear(),
+                dto.coverUrl()
+        ));
+    }
+
+    @DeleteMapping("{id}")
+    public void delete(
+            @PathVariable("id") UUID id
+    ) {
+        albumCommandService.delete(new DeleteAlbumCommand(id));
     }
 }
