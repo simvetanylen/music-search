@@ -1,4 +1,6 @@
 spring:
   application.name: MusicLibrary
+  kafka:
+    bootstrap.servers: localhost:29092
 
 
