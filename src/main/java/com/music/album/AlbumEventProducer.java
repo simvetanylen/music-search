@@ -1,6 +1,5 @@
 package com.music.album;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.opentelemetry.api.trace.Span;
 import org.apache.kafka.clients.producer.ProducerRecord;
