@@ -3,13 +3,10 @@ package com.music.album;
 import com.music.album.command.CreateAlbumCommand;
 import com.music.album.command.DeleteAlbumCommand;
 import com.music.album.command.UpdateAlbumCommand;
-import com.music.album.event.AlbumCreatedEvent;
 import com.music.album.event.AlbumDeletedEvent;
-import com.music.album.event.AlbumUpdatedEvent;
 import com.music.commons.NotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 
 @Service
@@ -27,45 +24,16 @@ public class AlbumCommandService {
     }
 
     public void create(CreateAlbumCommand command) {
-        var document = new AlbumDocument();
-        document.setId(command.id());
-        document.setArtist(command.artist());
-        document.setTitle(command.title());
-        document.setCoverUrl(command.coverUrl().toString());
-        document.setReleaseYear(command.releaseYear());
-        document.setCreateTime(LocalDateTime.now());
-        document.setUpdateTime(LocalDateTime.now());
-        this.albumRepository.save(document);
-
-        albumEventProducer.produce(document.getId(), new AlbumCreatedEvent(
-                document.getId(),
-                document.getTitle(),
-                document.getArtist(),
-                document.getReleaseYear(),
-                URI.create(document.getCoverUrl()),
-                document.getCreateTime(),
-                document.getUpdateTime()
-        ));
+        var result = AlbumDocument.create(command);
+        this.albumRepository.save(result.getFirst());
+        albumEventProducer.produce(result.getSecond().id(), result.getSecond());
     }
 
     public void update(UpdateAlbumCommand command) {
         var document = albumRepository.findById(command.id()).orElseThrow(NotFoundException::new);
-        document.setArtist(command.artist());
-        document.setTitle(command.title());
-        document.setCoverUrl(command.coverUrl().toString());
-        document.setReleaseYear(command.releaseYear());
-        document.setUpdateTime(LocalDateTime.now());
+        var event = document.update(command);
         this.albumRepository.save(document);
-
-        albumEventProducer.produce(document.getId(), new AlbumUpdatedEvent(
-                document.getId(),
-                document.getTitle(),
-                document.getArtist(),
-                document.getReleaseYear(),
-                URI.create(document.getCoverUrl()),
-                document.getCreateTime(),
-                document.getUpdateTime()
-        ));
+        albumEventProducer.produce(event.id(), event);
     }
 
     public void delete(DeleteAlbumCommand command) {

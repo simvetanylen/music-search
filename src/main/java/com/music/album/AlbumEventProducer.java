@@ -16,7 +16,7 @@ import java.util.UUID;
 @Component
 public class AlbumEventProducer {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(AlbumEventProducer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AlbumEventProducer.class);
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
 

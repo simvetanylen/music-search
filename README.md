@@ -23,6 +23,7 @@ Backend is started only when all other services are available. So it can take so
 * The backend should be up and running at localhost:8080
 * Swagger UI should be available at http://localhost:8080/swagger-ui/index.html
 * Crud operations are available alongside required search queries
+* Albums are populated at the start of the backend, if there are no albums in elasticsearch
 * Events are published on kafka on each change, consumer only log received messages
 * Webservices are monitored using open-telemetry, you can check metrics at http://localhost:16686/
 * Trace id and span id are saved inside kafka messages

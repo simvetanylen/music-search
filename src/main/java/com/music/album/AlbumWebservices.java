@@ -52,13 +52,7 @@ public class AlbumWebservices {
     public void create(
             @Validated @RequestBody CreateAlbumCommandDto dto
     ) {
-        albumCommandService.create(new CreateAlbumCommand(
-                UUID.randomUUID(),
-                dto.title(),
-                dto.artist(),
-                dto.releaseYear(),
-                dto.coverUrl()
-        ));
+        albumCommandService.create(map(dto));
     }
 
     @PutMapping("{id}")
@@ -66,13 +60,7 @@ public class AlbumWebservices {
             @PathVariable("id") UUID id,
             @Validated @RequestBody UpdateAlbumCommandDto dto
     ) {
-        albumCommandService.update(new UpdateAlbumCommand(
-                id,
-                dto.title(),
-                dto.artist(),
-                dto.releaseYear(),
-                dto.coverUrl()
-        ));
+        albumCommandService.update(map(id, dto));
     }
 
     @DeleteMapping("{id}")
@@ -80,5 +68,25 @@ public class AlbumWebservices {
             @PathVariable("id") UUID id
     ) {
         albumCommandService.delete(new DeleteAlbumCommand(id));
+    }
+
+    private static CreateAlbumCommand map(CreateAlbumCommandDto dto) {
+        return new CreateAlbumCommand(
+                UUID.randomUUID(),
+                dto.title(),
+                dto.artist(),
+                dto.releaseYear(),
+                dto.coverUrl()
+        );
+    }
+
+    private static UpdateAlbumCommand map(UUID id, UpdateAlbumCommandDto dto) {
+        return new UpdateAlbumCommand(
+                id,
+                dto.title(),
+                dto.artist(),
+                dto.releaseYear(),
+                dto.coverUrl()
+        );
     }
 }
