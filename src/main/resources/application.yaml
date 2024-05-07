@@ -3,4 +3,26 @@ spring:
   kafka:
     bootstrap.servers: localhost:29092
 
-
+otel:
+  propagators:
+    - tracecontext
+  resource.attributes:
+    deployment.environment: dev
+    service:
+      name: music
+      namespace: music
+  instrumentation:
+    spring-web.enabled: true
+    spring-webmvc: enabled
+  exporter:
+    otlp:
+      endpoint: http://localhost:4318
+management:
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: '*'

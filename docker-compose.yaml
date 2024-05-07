@@ -57,11 +57,31 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+  otel-collector:
+    image: otel/opentelemetry-collector:0.72.0
+    command: [ "--config=/etc/otel-collector-config.yml" ]
+    volumes:
+      - ./otel-config.yaml:/etc/otel-collector-config.yml
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    depends_on:
+      - jaeger-service
+    networks:
+      - musicStack
+  jaeger-service:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14250"
+    networks:
+      - musicStack
   music-backend:
     image: "music-backend:latest"
     environment:
       - SPRING_ELASTICSEARCH_URIS=elasticsearch:9200
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
     ports:
       - 8080:8080
     depends_on:
@@ -69,6 +89,8 @@ services:
         condition: service_healthy
       kafka:
         condition: service_healthy
+      otel-collector:
+        condition: service_started
     networks:
       - musicStack
 

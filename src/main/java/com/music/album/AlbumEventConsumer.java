@@ -16,8 +16,14 @@ public class AlbumEventConsumer {
     @KafkaListener(topics = "album", groupId = "music-group-id")
     public void listen(
             @Header(KafkaHeaders.RECEIVED_KEY) String key,
+            @Header("event-name") String eventName,
+            @Header("trace-id") String traceId,
+            @Header("span-id") String spanId,
             @Payload String message) {
-        LOGGER.info(key);
-        LOGGER.info(message);
+        LOGGER.info("key = {}", key);
+        LOGGER.info("event-name = {}", eventName);
+        LOGGER.info("trace-id = {}", traceId);
+        LOGGER.info("span-id = {}", spanId);
+        LOGGER.info("message = {}", message);
     }
 }

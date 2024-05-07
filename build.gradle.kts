@@ -1,7 +1,9 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
 plugins {
 	java
 	id("org.springframework.boot") version "3.2.5"
-	id("io.spring.dependency-management") version "1.1.4"
+	id("io.spring.dependency-management") version "1.1.5"
 }
 
 group = "com.music"
@@ -15,10 +17,19 @@ repositories {
 	mavenCentral()
 }
 
+
+dependencyManagement {
+	imports {
+		mavenBom("io.opentelemetry:opentelemetry-bom:1.37.0")
+		mavenBom("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:2.3.0-alpha")
+	}
+}
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-elasticsearch")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter")
 	implementation("org.springframework.kafka:spring-kafka")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 	compileOnly("org.projectlombok:lombok:1.18.32")
